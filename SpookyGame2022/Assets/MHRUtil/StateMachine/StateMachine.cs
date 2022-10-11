@@ -6,6 +6,7 @@ namespace MHR.StateMachine
     {
         private State _currentState;
         private List<Connection> _connections = new List<Connection>();
+        public State CurrentState => _currentState;
 
         public StateMachine(State startingState, params Connection[] connections)
         {
