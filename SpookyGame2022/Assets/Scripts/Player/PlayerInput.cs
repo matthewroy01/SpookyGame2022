@@ -3,73 +3,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace Player
 {
-    public class PlayerInput : MonoBehaviour
+    public class PlayerInput : Singleton<PlayerInput>
     {
-        private Vector2 _inputMovement;
-        private Vector2 _previousInputMovement;
-        private bool _inputJump;
-        private bool _inputLeftClick;
+        private SpookyGameControls _controls;
+        private Vector2 _movementVector;
+        private Vector2 _previousMovementVector;
         public event Action<Vector2> InputMovement;
+        public event Action<Vector2> InputMouseDelta;
         public event Action InputJump;
         public event Action InputLeftClick;
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _controls = new SpookyGameControls();
+            _controls.Enable();
+        }
+
+        private void OnEnable()
+        {
+            _controls.Base.Interact.performed += OnLeftClickPerformed;
+            _controls.Base.MouseDelta.performed += OnMouseDeltaPerformed;
+            _controls.Base.Jump.performed += OnJumpPerformed;
+        }
+
+        private void OnLeftClickPerformed(CallbackContext context)
+        {
+            InputLeftClick?.Invoke();
+        }
+
+        private void OnJumpPerformed(CallbackContext context)
+        {
+            InputJump?.Invoke();
+        }
+
+        private void OnMouseDeltaPerformed(CallbackContext context)
+        {
+            InputMouseDelta?.Invoke(context.ReadValue<Vector2>());
+        }
+
         private void Update()
         {
-            InputPolling();
-        }
-
-        private void LateUpdate()
-        {
-            InvokeEvents();
-        }
-
-        private void InputPolling()
-        {
-            _inputLeftClick = Mouse.current.leftButton.wasPressedThisFrame;
-
-            _inputJump = Keyboard.current.spaceKey.wasPressedThisFrame;
-
-            float x = 0.0f, y = 0.0f;
-            if (Keyboard.current.aKey.isPressed)
+            _movementVector = _controls.Base.Movement.ReadValue<Vector2>();
+            if (!(_previousMovementVector == Vector2.zero && _movementVector == Vector2.zero))
             {
-                x -= 1.0f;
+                InputMovement?.Invoke(_movementVector);
             }
-            if (Keyboard.current.dKey.isPressed)
-            {
-                x += 1.0f;
-            }
-            if (Keyboard.current.sKey.isPressed)
-            {
-                y -= 1.0f;
-            }
-            if (Keyboard.current.wKey.isPressed)
-            {
-                y += 1.0f;
-            }
-            _inputMovement = new Vector2(x, y).normalized;
-        }
-
-        private void InvokeEvents()
-        {
-            if (_inputLeftClick)
-            {
-                InputLeftClick?.Invoke();
-            }
-
-            if (_inputJump)
-            {
-                InputJump?.Invoke();
-            }
-
-            if (_inputMovement != _previousInputMovement)
-            {
-                InputMovement?.Invoke(_inputMovement);
-            }
-
-            _previousInputMovement = _inputMovement;
+            _previousMovementVector = _movementVector;
         }
     }
 }
