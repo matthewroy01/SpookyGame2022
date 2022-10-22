@@ -13,6 +13,7 @@ namespace Player
         [SerializeField] private Transform _cameraForward;
         [Header("States")]
         [SerializeField] private PlayerDefaultState _defaultState;
+        [SerializeField] private PlayerMowerState _mowerState;
         [Header("Physics")]
         [SerializeField] private float _artificialGravity;
         [Header("Ground Check")]
@@ -32,24 +33,34 @@ namespace Player
         private void Awake()
         {
             _stateMachine = new StateMachine(_defaultState,
-                new Connection(_defaultState));
+                new Connection(_defaultState, _mowerState),
+                new Connection(_mowerState, _defaultState)
+                );
 
             _defaultState.SetPlayerManager(this);
+            _mowerState.SetPlayerManager(this);
         }
 
         private void OnEnable()
         {
             PlayerInput.Instance.InputMovement += OnInputMovement;
+            PlayerInput.Instance.InputLeftClick += OnInputLeftClick;
         }
 
         private void OnDisable()
         {
             PlayerInput.Instance.InputMovement -= OnInputMovement;
+            PlayerInput.Instance.InputLeftClick -= OnInputLeftClick;
         }
 
         private void OnInputMovement(Vector2 value)
         {
             SetMovementVector(value);
+        }
+
+        private void OnInputLeftClick()
+        {
+            ToggleMowerState();
         }
 
         private void Update()
@@ -103,6 +114,18 @@ namespace Player
                     _grounded = false;
                     LeftGround?.Invoke();
                 }
+            }
+        }
+
+        private void ToggleMowerState()
+        {
+            if (_stateMachine.CurrentState == _defaultState)
+            {
+                _stateMachine.TryChangeState(_mowerState);
+            }
+            else if (_stateMachine.CurrentState == _mowerState)
+            {
+                _stateMachine.TryChangeState(_defaultState);
             }
         }
     }
