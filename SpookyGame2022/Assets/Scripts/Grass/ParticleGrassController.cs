@@ -1,11 +1,5 @@
-using Player;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEditor.TerrainTools;
+using Player.States;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 namespace Grass
 {

@@ -1,10 +1,7 @@
-using Grass;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace Player.States
 {
     public class PlayerMowerState : PlayerState
     {

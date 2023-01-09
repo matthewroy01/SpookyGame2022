@@ -1,8 +1,7 @@
 using MHR.StateMachine;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Player.States;
 
 namespace Player
 {
@@ -44,23 +43,16 @@ namespace Player
         private void OnEnable()
         {
             PlayerInput.Instance.InputMovement += OnInputMovement;
-            PlayerInput.Instance.InputLeftClick += OnInputLeftClick;
         }
 
         private void OnDisable()
         {
             PlayerInput.Instance.InputMovement -= OnInputMovement;
-            PlayerInput.Instance.InputLeftClick -= OnInputLeftClick;
         }
 
         private void OnInputMovement(Vector2 value)
         {
             SetMovementVector(value);
-        }
-
-        private void OnInputLeftClick()
-        {
-            ToggleMowerState();
         }
 
         private void Update()
