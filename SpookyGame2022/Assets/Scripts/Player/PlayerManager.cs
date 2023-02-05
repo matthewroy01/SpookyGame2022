@@ -5,6 +5,7 @@ using Player.States;
 
 namespace Player
 {
+    [RequireComponent(typeof(PlayerDefaultState)), RequireComponent(typeof(PlayerMowerState))]
     public class PlayerManager : MonoBehaviour
     {
         [Header("References")]

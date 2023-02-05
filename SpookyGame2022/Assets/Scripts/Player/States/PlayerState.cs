@@ -5,16 +5,16 @@ namespace Player.States
     public abstract class PlayerState : State
     {
         private PlayerManager _playerManager;
-        public PlayerManager PlayerManager => _playerManager;
+        protected PlayerManager PlayerManager => _playerManager;
 
         public void SetPlayerManager(PlayerManager playerManager)
         {
             _playerManager = playerManager;
         }
 
-        public override abstract void EnterState();
-        public override abstract void ProcessState();
-        public override abstract void ProcessStateFixed();
-        public override abstract void ExitState();
+        public abstract override void EnterState();
+        public abstract override void ProcessState();
+        public abstract override void ProcessStateFixed();
+        public abstract override void ExitState();
     }   
 }

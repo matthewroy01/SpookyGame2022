@@ -1,4 +1,5 @@
 using Environment;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,13 +10,14 @@ namespace UI
         [Header("References")]
         [SerializeField] private InteractionManager _interactionManager;
         [Header("Reticle")]
-        [SerializeField] private Image _reticle;
-        [SerializeField] private Color _reticleColor;
+        [SerializeField] private CanvasGroup _reticleCanvasGroup;
+        [SerializeField] private Image _reticleImage;
+        [SerializeField] private Sprite _disabledReticle;
+        [SerializeField] private Sprite _enabledReticle;
         [SerializeField, Range(0.0f, 1.0f)] private float _defaultReticleAlpha;
 
         private void Awake()
         {
-            _reticle.color = _reticleColor;
             SetReticleAlpha(_defaultReticleAlpha);
         }
 
@@ -44,16 +46,18 @@ namespace UI
         private void ShowReticle()
         {
             SetReticleAlpha(1.0f);
+            _reticleImage.sprite = _enabledReticle;
         }
 
         private void HideReticle()
         {
             SetReticleAlpha(_defaultReticleAlpha);
+            _reticleImage.sprite = _disabledReticle;
         }
 
         private void SetReticleAlpha(float alpha)
         {
-            _reticle.CrossFadeAlpha(alpha, 0.0f, false);
+            _reticleCanvasGroup.alpha = alpha;
         }
     }
 }

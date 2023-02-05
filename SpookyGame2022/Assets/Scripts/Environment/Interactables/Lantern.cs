@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Environment
+namespace Environment.Interactables
 {
     public class Lantern : Interactable
     {
